@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { HashRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
+import Main from './components/Main';
 import PassengersPage from './components/Passengers/PassengersPage';
 import PostsPage from './components/Posts/PostsPage';
 import InfiniteSWAPIPage from './components/InfiniteSWAPI/InfiniteSWAPIPage';
@@ -20,6 +21,15 @@ const ROUTES_MAP = Array.from(ROUTES.entries());
 
 function App() {
   const [, setTime] = useState(+new Date());
+  const history = useHistory();
+  const index = useMemo(
+    () => ROUTES_MAP.findIndex(([path]) => `/${path}` === history.location.pathname),
+    [history.location.pathname],
+  );
+
+  const handleChange = (value) => {
+    history.push(`/${ROUTES_MAP[value][0]}`);
+  };
 
   return (
     <div>
@@ -27,24 +37,9 @@ function App() {
         <button style={{ position: 'absolute', top: 10, right: 10 }} onClick={() => setTime(+new Date())}>
           R
         </button>
-        <Router>
-          <div>
-            <ul>
-              {ROUTES_MAP.map(([key, { name }]) => (
-                <li key={key}>
-                  <Link to={`/${key}`}>{name}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <Switch>
-            {ROUTES_MAP.map(([key, { component: Component }]) => (
-              <Route key={key} path={`/${key}`}>
-                <Component />
-              </Route>
-            ))}
-          </Switch>
-        </Router>
+
+        <Main defaultValue={index !== -1 ? index + 1 : 0} routesMap={ROUTES_MAP} onChange={handleChange} />
+
         <ReactQueryDevtools />
       </QueryClientProvider>
     </div>
