@@ -31,7 +31,7 @@ function App() {
           <div>
             <ul>
               {ROUTES_MAP.map(([key, { name }]) => (
-                <li>
+                <li key={key}>
                   <Link to={`/${key}`}>{name}</Link>
                 </li>
               ))}
@@ -39,7 +39,7 @@ function App() {
           </div>
           <Switch>
             {ROUTES_MAP.map(([key, { component: Component }]) => (
-              <Route path={`/${key}`}>
+              <Route key={key} path={`/${key}`}>
                 <Component />
               </Route>
             ))}

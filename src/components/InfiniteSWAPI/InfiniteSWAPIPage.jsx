@@ -1,10 +1,10 @@
-import InfiniteSWAPI from './InfiniteSWAPI';
+import InfinitePeople from './InfinitePeople';
 
 function InfiniteSWAPIPage() {
   return (
     <>
-      <h1>Infinite SWAPI</h1>
-      <InfiniteSWAPI />
+      <h1>Infinite People</h1>
+      <InfinitePeople />
     </>
   );
 }

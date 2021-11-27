@@ -48,3 +48,9 @@ body {
 .layout1 div {
   padding: 10px 30px;
 }
+
+.loading {
+  position: fixed;
+  top: 15px;
+  right: 55px;
+}
