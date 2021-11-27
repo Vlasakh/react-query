@@ -5,10 +5,18 @@ import { HashRouter as Router, Route, Switch, Link } from 'react-router-dom';
 
 import PassengersPage from './components/Passengers/PassengersPage';
 import PostsPage from './components/Posts/PostsPage';
+import InfiniteSWAPIPage from './components/InfiniteSWAPI/InfiniteSWAPIPage';
 
 import './App.css';
 
 const queryClient = new QueryClient();
+
+const ROUTES = new Map([
+  ['posts', { name: 'Posts', component: PostsPage }],
+  ['passengers', { name: 'Passengers', component: PassengersPage }],
+  ['infinite-swapi', { name: 'Infinite SWAPI', component: InfiniteSWAPIPage }],
+]);
+const ROUTES_MAP = Array.from(ROUTES.entries());
 
 function App() {
   const [, setTime] = useState(+new Date());
@@ -22,24 +30,19 @@ function App() {
         <Router>
           <div>
             <ul>
-              <li>
-                <Link to="/posts">Posts</Link>
-              </li>
-              <li>
-                <Link to="/passengers">Passengers</Link>
-              </li>{' '}
-              <li>
-                <Link to="/infinite-swapi">Infinite SWAPI</Link>
-              </li>
+              {ROUTES_MAP.map(([key, { name }]) => (
+                <li>
+                  <Link to={`/${key}`}>{name}</Link>
+                </li>
+              ))}
             </ul>
           </div>
           <Switch>
-            <Route path="/posts">
-              <PostsPage />
-            </Route>
-            <Route path="/passengers">
-              <PassengersPage />
-            </Route>
+            {ROUTES_MAP.map(([key, { component: Component }]) => (
+              <Route path={`/${key}`}>
+                <Component />
+              </Route>
+            ))}
           </Switch>
         </Router>
         <ReactQueryDevtools />
