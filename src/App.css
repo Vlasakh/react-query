@@ -1,3 +1,7 @@
+body {
+  padding: 10px;
+}
+
 .App {
   text-align: center;
 }
@@ -35,4 +39,12 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.layout1 {
+  display: flex;
+}
+
+.layout1 div {
+  padding: 10px 30px;
 }

@@ -2,6 +2,11 @@ import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { useFormik } from 'formik';
 
+const fetchPassenger = async (id) => {
+  const res = await fetch(`https://api.instantwebtools.net/v1/passenger/${id}`);
+  return res.json();
+};
+
 function PassengerID() {
   const [id, setID] = useState('');
   const formik = useFormik({
@@ -13,11 +18,7 @@ function PassengerID() {
       setID(values._id);
     },
   });
-  const fetchPassenger = async (id) => {
-    const res = await fetch(`https://api.instantwebtools.net/v1/passenger/${id}`);
-    return res.json();
-  };
-  const { data, error, isLoading } = useQuery(['passengerID', id], () => fetchPassenger(id));
+  const { data, error, isLoading } = useQuery(['passengerID', id], () => fetchPassenger(id), { refetchOnMount: false });
 
   return (
     <div>
