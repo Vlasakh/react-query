@@ -1,12 +1,6 @@
 // @ts-nocheck
 import dayjs from 'dayjs';
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 
 import { axiosInstance } from '../../../axiosInstance';
@@ -18,10 +12,7 @@ import { getAvailableAppointments } from '../utils';
 import { getMonthYearDetails, getNewMonthYear, MonthYear } from './monthYear';
 
 // for useQuery call
-async function getAppointments(
-  year: string,
-  month: string,
-): Promise<AppointmentDateMap> {
+async function getAppointments(year: string, month: string): Promise<AppointmentDateMap> {
   await wait(1500);
   const { data } = await axiosInstance.get(`/appointments/${year}/${month}`);
   return data;
@@ -35,6 +26,11 @@ interface UseAppointments {
   showAll: boolean;
   setShowAll: Dispatch<SetStateAction<boolean>>;
 }
+
+const COMMON_OPTIONS = {
+  staleTime: 0,
+  cacheTime: 300000,
+};
 
 // The purpose of this hook:
 //   1. track the current month/year (aka monthYear) selected by the user
@@ -78,7 +74,14 @@ export function useAppointments(): UseAppointments {
   const { data: appointments = {} } = useQuery(
     [queryKeys.appointments, monthYear.year, monthYear.month],
     () => getAppointments(monthYear.year, monthYear.month),
-    { select: showAll ? undefined : selectFn },
+    {
+      select: showAll ? undefined : selectFn,
+      ...COMMON_OPTIONS,
+      refetchOnMount: true,
+      refetchOnReconnect: true,
+      refetchOnWindowFocus: true,
+      refetchInterval: 60000,
+    },
   );
 
   const queryClient = useQueryClient();
@@ -87,6 +90,7 @@ export function useAppointments(): UseAppointments {
     queryClient.prefetchQuery(
       [queryKeys.appointments, monthYear.year, monthYear.nextMonth],
       () => getAppointments(monthYear.year, monthYear.nextMonth),
+      COMMON_OPTIONS,
     );
   }, [monthYear.year, monthYear.month]);
 
